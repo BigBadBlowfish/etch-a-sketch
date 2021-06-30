@@ -1,39 +1,52 @@
-function turnBlack (e) {
+function turnBlack(e) {
     e.style.background = 'black';
 }
 
-
 const mainContainer = document.querySelector('div.mainContainer');
 
-for (i=0; i<16; i++) {
+function drawSketcher(size) {
 
-    console.log('outer loop ran: ' + i+1 + ' times.')
-
-    const subContainer = document.createElement('div');
-    subContainer.classList.add('etchRow');
-    subContainer.style.cssText = "display: flex; flex-direction: row;"
-
-    mainContainer.appendChild(subContainer);
+    for (i = 0; i < size; i++) {
 
 
-    for(j=0; j<16; j++) {
-
-        console.log('inner loop loop ran: ' + j+1 + ' times.')
-        const square = document.createElement('div');
-        square.classList.add('square');
-
-        square.style.width = '30px';
-        square.style.height = '30px';
-        square.style.border = '1px solid black';
-
-        square.addEventListener('mouseover', (e) => {
-            console.log(e);
-            e.target.style.cssText = 'height: 30px; width: 30px; border: 1px solid black; background-color: black';
-        });
+        const subContainer = document.createElement('div');
+        subContainer.classList.add('etchRow');
+        const percentHeight = (1 / size) * 100;
+        subContainer.style.height = percentHeight.toString() + '%';
+        mainContainer.appendChild(subContainer);
 
 
-        subContainer.appendChild(square);
+        for (j = 0; j < size; j++) {
 
+            const square = document.createElement('div');
+            square.classList.add('squareBlank');
+            const percentWidth = (1 / size) * 100;
+            square.style.width = percentWidth.toString() + '%';
+            square.addEventListener('mouseover', (e) => {
+                console.log(e);
+                e.target.classList.add('squareFilled');
+            });
+            subContainer.appendChild(square);
+
+
+        }
     }
+}
 
+function clearSketcher() {
+    const rows = document.querySelectorAll('.etchRow');
+    const squares = document.querySelectorAll('.squareBlank .squareFilled');
+
+    squares.forEach(square => square.remove());
+    rows.forEach(row => row.remove());
+}
+
+drawSketcher(16);
+
+const resSlider = document.querySelector('div.resSlider');
+const resRange = document.querySelector('#resRange');
+
+resSlider.oninput = () => {
+    clearSketcher();
+    drawSketcher(resRange.value);
 }
