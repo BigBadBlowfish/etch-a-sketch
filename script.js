@@ -1,20 +1,17 @@
-function turnBlack(e) {
-    e.style.background = 'black';
-}
-
 const mainContainer = document.querySelector('div.mainContainer');
+const resSlider = document.querySelector('div.resSlider');
+const resRange = document.querySelector('#resRange');
+const resetBtn = document.querySelector('button.resetBtn');
 
-function drawSketcher(size) {
+const drawSketcher = (size) => {
 
     for (i = 0; i < size; i++) {
-
 
         const subContainer = document.createElement('div');
         subContainer.classList.add('etchRow');
         const percentHeight = (1 / size) * 100;
         subContainer.style.height = percentHeight.toString() + '%';
         mainContainer.appendChild(subContainer);
-
 
         for (j = 0; j < size; j++) {
 
@@ -23,30 +20,46 @@ function drawSketcher(size) {
             const percentWidth = (1 / size) * 100;
             square.style.width = percentWidth.toString() + '%';
             square.addEventListener('mouseover', (e) => {
-                console.log(e);
-                e.target.classList.add('squareFilled');
+                e.target.classList.toggle('squareFilled', true);
             });
             subContainer.appendChild(square);
-
-
         }
     }
 }
 
-function clearSketcher() {
-    const rows = document.querySelectorAll('.etchRow');
-    const squares = document.querySelectorAll('.squareBlank .squareFilled');
+const getCurrentRows = () => {
+    return document.querySelectorAll('.etchRow');
+}
 
+const getCurrentSquares = (selection) => {
+    if(selection == "blank") {
+        return document.querySelectorAll('.squareBlank');
+    } else if (selection == "filled") {
+        return document.querySelectorAll('.squareFilled');
+    } else if (selection == "all") {
+        return document.querySelectorAll('.squareBlank .squareFilled');
+    } else {
+        return document.querySelectorAll();
+    }
+}
+
+const deleteSketcher = () => {
+    const rows = getCurrentRows();
+    const squares = getCurrentSquares("all");
     squares.forEach(square => square.remove());
     rows.forEach(row => row.remove());
 }
 
-drawSketcher(16);
+const resetSketcher = () => {
+    const filledSquares = getCurrentSquares("filled");
+    filledSquares.forEach(filledSquare => filledSquare.classList.toggle('squareFilled', false));
+}
 
-const resSlider = document.querySelector('div.resSlider');
-const resRange = document.querySelector('#resRange');
+resetBtn.addEventListener('click', resetSketcher);
 
 resSlider.oninput = () => {
-    clearSketcher();
+    deleteSketcher();
     drawSketcher(resRange.value);
 }
+
+drawSketcher(16);
