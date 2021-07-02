@@ -62,38 +62,35 @@ const findCurrentMode = () => {
         return turnBlack;
     }
 }
+
 function turnBlack(e) {
-    console.log('black listener');
     e.target.style.backgroundColor = 'black';
 }
 
 function turnGrey(e) {
-    let currBackgroundColor = e.target.style.backgroundColor;
-    console.log('gray listener');
-    if (currBackgroundColor == 'white') {
-        e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+    let currBackgroundColor = e.target.style.backgroundColor;  
+    let currBackgroundString = '';
+    if (currBackgroundColor.length >= 12) {
+        currBackgroundString = currBackgroundColor.slice(0, 12);
+    }
+    if (currBackgroundColor == 'rgb(0, 0, 0)') {
+        e.target.style.backgroundColor = currBackgroundColor;
+    } else if (currBackgroundString != 'rgba(0, 0, 0') {
+        e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.1)'; 
     } else {
         let rgbaValues = currBackgroundColor.slice(5, currBackgroundColor.length - 1);
-        //console.log('rgba values = ' + rgbaValues);
-        // let rgbaArr = rgbaValues.split(',');
-        // console.log('rgba values after split = ' + rgbaArr);
         let currGreyLevel = rgbaValues.slice(rgbaValues.length - 3);
-        // console.log('Current grey level = ' + currGreyLevel);
         backgroundColor = 'rgba(0, 0, 0, ' + (parseFloat(currGreyLevel) + 0.1).toString() + ')';
         e.target.style.backgroundColor = backgroundColor;
-        //   console.log('Adding background = ' + backgroundColor);
     }
 }
 
 function turnRGB(e) {
-    console.log('rgb listener');
     let randRed = Math.floor(Math.random() * 256);
     let randGreen = Math.floor(Math.random() * 256);
     let randBlue = Math.floor(Math.random() * 256);
     e.target.style.backgroundColor = 'rgb(' + randRed.toString() + ', ' + randGreen.toString() + ', ' + randBlue.toString() + ')';
-
 }
-
 
 const blackFill = () => {
     const squares = getCurrentSquares();
@@ -116,23 +113,14 @@ const rgbFill = () => {
     squares.forEach(square => square.addEventListener('mouseover', turnRGB))
 }
 
-
 resetBtn.addEventListener('click', resetSketcher);
-
 resSlider.oninput = () => {
     deleteSketcher();
     drawSketcher(resRange.value);
 }
 
-
 blackBtn.addEventListener('click', blackFill);
-// blackBtn.addEventListener('click', () => {
-//     alert('Current Mode: ' + currentMode);
-// });
 greyBtn.addEventListener('click', greyFill);
-// greyBtn.addEventListener('click', () => {
-//     alert('Current Mode: ' + currentMode);
-// });
 rgbBtn.addEventListener('click', rgbFill);
 
 drawSketcher(16);
