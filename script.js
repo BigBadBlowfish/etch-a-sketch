@@ -2,6 +2,12 @@ const mainContainer = document.querySelector('div.mainContainer');
 const resSlider = document.querySelector('div.resSlider');
 const resRange = document.querySelector('#resRange');
 const resetBtn = document.querySelector('button.resetBtn');
+const blackBtn = document.querySelector('button.blackBtn');
+const greyBtn = document.querySelector('button.greyBtn');
+const rgbBtn = document.querySelector('button.rgbBtn');
+
+let currentMode;
+let currentClass;
 
 const drawSketcher = (size) => {
 
@@ -16,12 +22,10 @@ const drawSketcher = (size) => {
         for (j = 0; j < size; j++) {
 
             const square = document.createElement('div');
-            square.classList.add('squareBlank');
+            square.classList.add('square');
             const percentWidth = (1 / size) * 100;
             square.style.width = percentWidth.toString() + '%';
-            square.addEventListener('mouseover', (e) => {
-                e.target.classList.toggle('squareFilled', true);
-            });
+            square.style.backgroundColor = 'white';
             subContainer.appendChild(square);
         }
     }
@@ -31,29 +35,87 @@ const getCurrentRows = () => {
     return document.querySelectorAll('.etchRow');
 }
 
-const getCurrentSquares = (selection) => {
-    if(selection == "blank") {
-        return document.querySelectorAll('.squareBlank');
-    } else if (selection == "filled") {
-        return document.querySelectorAll('.squareFilled');
-    } else if (selection == "all") {
-        return document.querySelectorAll('.squareBlank .squareFilled');
-    } else {
-        return document.querySelectorAll();
-    }
+const getCurrentSquares = () => {
+    return document.querySelectorAll('.square')
 }
 
 const deleteSketcher = () => {
     const rows = getCurrentRows();
-    const squares = getCurrentSquares("all");
+    const squares = getCurrentSquares();
     squares.forEach(square => square.remove());
     rows.forEach(row => row.remove());
 }
 
 const resetSketcher = () => {
-    const filledSquares = getCurrentSquares("filled");
-    filledSquares.forEach(filledSquare => filledSquare.classList.toggle('squareFilled', false));
+    const allSquares = getCurrentSquares();
+    allSquares.forEach(square => {
+        square.style.backgroundColor = 'white';
+    })
 }
+
+const findCurrentMode = () => {
+    if (currentMode == 'greyFill') {
+        return turnGrey;
+    } else if (currentMode =='rgbFill') {
+        return turnRGB;
+    } else {
+        return turnBlack;
+    }
+}
+function turnBlack(e) {
+    console.log('black listener');
+    e.target.style.backgroundColor = 'black';
+}
+
+function turnGrey(e) {
+    let currBackgroundColor = e.target.style.backgroundColor;
+    console.log('gray listener');
+    if (currBackgroundColor == 'white') {
+        e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+    } else {
+        let rgbaValues = currBackgroundColor.slice(5, currBackgroundColor.length - 1);
+        //console.log('rgba values = ' + rgbaValues);
+        // let rgbaArr = rgbaValues.split(',');
+        // console.log('rgba values after split = ' + rgbaArr);
+        let currGreyLevel = rgbaValues.slice(rgbaValues.length - 3);
+        // console.log('Current grey level = ' + currGreyLevel);
+        backgroundColor = 'rgba(0, 0, 0, ' + (parseFloat(currGreyLevel) + 0.1).toString() + ')';
+        e.target.style.backgroundColor = backgroundColor;
+        //   console.log('Adding background = ' + backgroundColor);
+    }
+}
+
+function turnRGB(e) {
+    console.log('rgb listener');
+    let randRed = Math.floor(Math.random() * 256);
+    let randGreen = Math.floor(Math.random() * 256);
+    let randBlue = Math.floor(Math.random() * 256);
+    e.target.style.backgroundColor = 'rgb(' + randRed.toString() + ', ' + randGreen.toString() + ', ' + randBlue.toString() + ')';
+
+}
+
+
+const blackFill = () => {
+    const squares = getCurrentSquares();
+    squares.forEach(square => square.removeEventListener('mouseover', findCurrentMode()));
+    currentMode = 'blackFill';
+    squares.forEach(square => square.addEventListener('mouseover', turnBlack));
+}
+
+const greyFill = () => {
+    const squares = getCurrentSquares();
+    squares.forEach(square => square.removeEventListener('mouseover', findCurrentMode()));
+    currentMode = 'greyFill';
+    squares.forEach(square => square.addEventListener('mouseover', turnGrey));
+}
+
+const rgbFill = () => {
+    const squares = getCurrentSquares();
+    squares.forEach(square => square.removeEventListener('mouseover', findCurrentMode()));
+    currentMode = 'rgbFill';
+    squares.forEach(square => square.addEventListener('mouseover', turnRGB))
+}
+
 
 resetBtn.addEventListener('click', resetSketcher);
 
@@ -61,5 +123,16 @@ resSlider.oninput = () => {
     deleteSketcher();
     drawSketcher(resRange.value);
 }
+
+
+blackBtn.addEventListener('click', blackFill);
+// blackBtn.addEventListener('click', () => {
+//     alert('Current Mode: ' + currentMode);
+// });
+greyBtn.addEventListener('click', greyFill);
+// greyBtn.addEventListener('click', () => {
+//     alert('Current Mode: ' + currentMode);
+// });
+rgbBtn.addEventListener('click', rgbFill);
 
 drawSketcher(16);
