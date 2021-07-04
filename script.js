@@ -1,5 +1,6 @@
 const mainContainer = document.querySelector('div.mainContainer');
 const resSlider = document.querySelector('div.resSlider');
+const resReadout = document.querySelector('.resReadout');
 const resRange = document.querySelector('#resRange');
 const resetBtn = document.querySelector('button.resetBtn');
 const blackBtn = document.querySelector('button.blackBtn');
@@ -7,7 +8,6 @@ const greyBtn = document.querySelector('button.greyBtn');
 const rgbBtn = document.querySelector('button.rgbBtn');
 
 let currentMode;
-let currentClass;
 
 const drawSketcher = (size) => {
 
@@ -53,21 +53,21 @@ const resetSketcher = () => {
     })
 }
 
-const findCurrentMode = () => {
-    if (currentMode == 'greyFill') {
-        return turnGrey;
-    } else if (currentMode =='rgbFill') {
-        return turnRGB;
+const findFill = () => {
+    if (currentMode == greyMode) {
+        return greyFill;
+    } else if (currentMode == rgbMode) {
+        return rgbFill;
     } else {
-        return turnBlack;
+        return blackFill;
     }
 }
 
-function turnBlack(e) {
+function blackFill(e) {
     e.target.style.backgroundColor = 'black';
 }
 
-function turnGrey(e) {
+function greyFill(e) {
     let currBackgroundColor = e.target.style.backgroundColor;  
     let currBackgroundString = '';
     if (currBackgroundColor.length >= 12) {
@@ -85,42 +85,51 @@ function turnGrey(e) {
     }
 }
 
-function turnRGB(e) {
+function rgbFill(e) {
     let randRed = Math.floor(Math.random() * 256);
     let randGreen = Math.floor(Math.random() * 256);
     let randBlue = Math.floor(Math.random() * 256);
     e.target.style.backgroundColor = 'rgb(' + randRed.toString() + ', ' + randGreen.toString() + ', ' + randBlue.toString() + ')';
 }
 
-const blackFill = () => {
+const blackMode = () => {
     const squares = getCurrentSquares();
-    squares.forEach(square => square.removeEventListener('mouseover', findCurrentMode()));
-    currentMode = 'blackFill';
-    squares.forEach(square => square.addEventListener('mouseover', turnBlack));
+    squares.forEach(square => square.removeEventListener('mouseover', findFill()));
+    currentMode = blackMode;
+    squares.forEach(square => square.addEventListener('mouseover', blackFill));
 }
 
-const greyFill = () => {
+const greyMode = () => {
     const squares = getCurrentSquares();
-    squares.forEach(square => square.removeEventListener('mouseover', findCurrentMode()));
-    currentMode = 'greyFill';
-    squares.forEach(square => square.addEventListener('mouseover', turnGrey));
+    squares.forEach(square => square.removeEventListener('mouseover', findFill()));
+    currentMode = greyMode;
+    squares.forEach(square => square.addEventListener('mouseover', greyFill));
 }
 
-const rgbFill = () => {
+const rgbMode = () => {
     const squares = getCurrentSquares();
-    squares.forEach(square => square.removeEventListener('mouseover', findCurrentMode()));
-    currentMode = 'rgbFill';
-    squares.forEach(square => square.addEventListener('mouseover', turnRGB))
+    squares.forEach(square => square.removeEventListener('mouseover', findFill()));
+    currentMode = rgbMode;
+    squares.forEach(square => square.addEventListener('mouseover', rgbFill))
 }
 
 resetBtn.addEventListener('click', resetSketcher);
-resSlider.oninput = () => {
+
+resSlider.addEventListener('mouseup', () => {
     deleteSketcher();
     drawSketcher(resRange.value);
-}
+    currentMode();
+});
 
-blackBtn.addEventListener('click', blackFill);
-greyBtn.addEventListener('click', greyFill);
-rgbBtn.addEventListener('click', rgbFill);
+resSlider.addEventListener('input', () => {
+    const res = resRange.value;
+    resReadout.textContent = "Resolution: " + res + " x " + res;
+})
 
-drawSketcher(16);
+blackBtn.addEventListener('click', blackMode);
+greyBtn.addEventListener('click', greyMode);
+rgbBtn.addEventListener('click', rgbMode);
+
+currentMode = blackMode;
+drawSketcher(resRange.value);
+currentMode();

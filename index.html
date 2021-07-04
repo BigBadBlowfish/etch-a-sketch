@@ -12,10 +12,6 @@
     <body>
         <h1>ETCH-A-SKETCH</h1>
         <div class="controls">
-            <div class="resSlider">
-                <p>Resolution Slider</p>
-                <input type="range" min="16" max="100" value="16" class="slider" id="resRange">
-            </div>
             <div class="blackBtnContainer">
                 <button type="button" class = "blackBtn">Black</button>
             </div>
@@ -31,6 +27,12 @@
         </div>
       
         <div class = "mainContainer"></div>
+
+        <div class="resSlider">
+            <h3 class="resReadout">Resolution: 16 x 16</h3>
+            <input type="range" min="16" max="100" value="16" class="slider" id="resRange">
+        </div>
+
         <script src="script.js"></script>
     </body>
 </html>
