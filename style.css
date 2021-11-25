@@ -1,8 +1,27 @@
+/* chewy-regular - latin */
+@font-face {
+  font-family: 'Chewy';
+  font-style: normal;
+  font-weight: 400;
+  src: url('font/chewy-v12-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('font/chewy-v12-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('font/chewy-v12-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('font/chewy-v12-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('font/chewy-v12-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('font/chewy-v12-latin-regular.svg#Chewy') format('svg'); /* Legacy iOS */
+}
+
 body {
     background-color: #dae7ed;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+h1 {
+  font-family: 'Chewy', Fallback, sans-serif;
+  font-size: 5rem;
 }
 
 h3 {
@@ -22,8 +41,20 @@ button {
     transition-duration: 0.4s;
   }
 
+.blackBtn {
+  background-color: #0d0d0d;
+}
+
+.greyBtn {
+  background-color: darkgrey;
+}
+
+.rgbBtn {
+  background-image: linear-gradient(to right, rgba(255, 126, 126, 0.527),  rgba(131, 255, 158, 0.493), rgba(133, 133, 255, 0.527));
+}
+
 button.resetBtn {
-    background-color: #f44336;
+  background-color: #f44336;
 }
 
 button:hover {
@@ -80,7 +111,6 @@ button:hover {
     width: 6.25%;
     border: 1px solid black;
 }
-
 
 
 
